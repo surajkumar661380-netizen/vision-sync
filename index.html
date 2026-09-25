@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remix Vision Sync</title>
+    <meta name="description" content="Uses computer vision to recognize objects and makes music based on what it sees." />
+    <meta property="og:title" content="Remix Vision Sync" />
+    <meta property="og:description" content="Uses computer vision to recognize objects and makes music based on what it sees." />
+    <script>
+      // Filter out benign TFLite informational messages routed to stderr/console.error
+      // and normal video interruption AbortErrors.
+      (function() {
+        const origConsoleError = console.error;
+        console.error = function(...args) {
+          const first = args[0];
+          const str = (typeof first === 'string' ? first : (first && first.message) || '') + '';
+          if (
+            str.includes('Created TensorFlow Lite XNNPACK delegate') ||
+            str.includes('INFO: Created') ||
+            str.includes('interrupted by a new load request') ||
+            (first && first.name === 'AbortError')
+          ) {
+            console.info(...args);
+            return;
+          }
+          origConsoleError.apply(console, args);
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+          const reason = event.reason;
+          if (
+            reason &&
+            (reason.name === 'AbortError' ||
+             (typeof reason.message === 'string' && reason.message.includes('interrupted by a new load request')))
+          ) {
+            event.preventDefault();
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

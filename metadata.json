@@ -1,0 +1,8 @@
+{
+  "name": "Remix Vision Sync",
+  "description": "Uses computer vision to recognize objects and makes music based on what it sees.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": []
+}
